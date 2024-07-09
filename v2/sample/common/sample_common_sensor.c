@@ -239,6 +239,7 @@ static const char *snsr_type_name[SAMPLE_SNS_TYPE_BUTT] = {
 	"VIVO_MM308M2_2M_25FPS_8BIT",
 	"LONTIUM_LT6911_2M_60FPS_8BIT",
 	"LONTIUM_LT7911_2M_60FPS_8BIT",
+	"TOSHIBA_TC358743_2M_60FPS_8BIT",
 	/* ------ LINEAR END ------*/
 
 	/* ------ WDR 2TO1 BEGIN ------*/
@@ -451,6 +452,7 @@ CVI_S32 SAMPLE_COMM_SNS_GetSize(SAMPLE_SNS_TYPE_E enMode, PIC_SIZE_E *penSize)
 	case CVSENS_CV2003_1L_MIPI_2M_1080P_30FPS_10BIT:
 	case CVSENS_CV2003_1L_SLAVE_MIPI_2M_1080P_30FPS_10BIT:
 	case CVSENS_CV2003_1L_SLAVE1_MIPI_2M_1080P_30FPS_10BIT:
+	case TOSHIBA_TC358743_2M_60FPS_8BIT:
 		*penSize = PIC_1080P;
 		break;
 	case GCORE_GC4023_MIPI_4M_30FPS_10BIT:
@@ -971,6 +973,12 @@ CVI_S32 SAMPLE_COMM_SNS_GetDevAttr(SAMPLE_SNS_TYPE_E enSnsType, VI_DEV_ATTR_S *p
 		pstViDevAttr->enIntfMode = VI_MODE_MIPI_YUV422;
 		pstViDevAttr->enBayerFormat = BAYER_FORMAT_BG;
 		break;
+	case TOSHIBA_TC358743_2M_60FPS_8BIT:
+		pstViDevAttr->enDataSeq = VI_DATA_SEQ_UYVY;
+		pstViDevAttr->enInputDataType = VI_DATA_TYPE_YUV;
+		pstViDevAttr->enIntfMode = VI_MODE_MIPI_YUV422;
+		pstViDevAttr->enBayerFormat = BAYER_FORMAT_BG;
+		break;
 	default:
 		pstViDevAttr->enBayerFormat = BAYER_FORMAT_BG;
 		break;
@@ -1167,6 +1175,10 @@ CVI_S32 SAMPLE_COMM_SNS_GetIspAttrBySns(SAMPLE_SNS_TYPE_E enSnsType, ISP_PUB_ATT
 		break;
 	case LONTIUM_LT6911_2M_60FPS_8BIT:
 	case LONTIUM_LT7911_2M_60FPS_8BIT:
+		pstPubAttr->enBayer = BAYER_BGGR;
+		pstPubAttr->f32FrameRate = 60;
+		break;
+	case TOSHIBA_TC358743_2M_60FPS_8BIT:
 		pstPubAttr->enBayer = BAYER_BGGR;
 		pstPubAttr->f32FrameRate = 60;
 		break;
@@ -1921,6 +1933,11 @@ CVI_VOID *SAMPLE_COMM_SNS_GetSnsObj(SAMPLE_SNS_TYPE_E enSnsType)
 #if defined(SENSOR_LONTIUM_LT7911)
 	case LONTIUM_LT7911_2M_60FPS_8BIT:
 		pSnsObj = &stSnsLT7911_Obj;
+		break;
+#endif
+#if defined(SENSOR_TOSHIBA_TC358743)
+	case TOSHIBA_TC358743_2M_60FPS_8BIT:
+		pSnsObj = &stSnsTC358743_Obj;
 		break;
 #endif
 	default:
